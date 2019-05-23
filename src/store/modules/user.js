@@ -1,12 +1,13 @@
-import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
+import { login, logout, getInfo } from "@/api/user";
+import { getToken, setToken, removeToken } from "@/utils/auth";
+import { resetRouter } from "@/router";
 
 const state = {
   token: getToken(),
-  name: '',
-  avatar: ''
-}
+  name: "",
+  avatar: "",
+  userId: ""
+};
 
 // 定义mutation
 // 更改state中属性值的唯一方法是使用并提交mutation。
@@ -17,17 +18,20 @@ const mutations = {
   // (state, token): mutation的匿名函数，用来对state中的属性值进行更改。这个匿名函数的第一个参数永远是
   // state对象，其他的参数就是在其他地方提交mutation时，额外传递给mutation的参数
   SET_TOKEN: (state, token) => {
-    state.token = token
+    state.token = token;
   },
   // 第二个mutation
   SET_NAME: (state, name) => {
-    state.name = name
+    state.name = name;
   },
   // 第三个mutation
   SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+    state.avatar = avatar;
+  },
+  SET_USER_ID: (state, userId) => {
+    state.userId = userId;
   }
-}
+};
 
 // 定义actions
 // 首先需要先定义一个或一些action，把他们全部放在actions里， 然后再在其他地方触发这些action。
@@ -70,71 +74,84 @@ const actions = {
   // 第一个action
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { username, password } = userInfo;
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
+      login({ username: username.trim(), password: password })
+        .then(response => {
+          const { data } = response;
+          commit("SET_TOKEN", data.token);
+          setToken(data.token);
+          resolve();
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
   },
 
   // 第二个action
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
+      getInfo(state.token)
+        .then(response => {
+          const { data } = response;
 
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
+          if (!data) {
+            reject("Verification failed, please Login again.");
+          }
 
-        const { name, avatar } = data
+          const { name, avatar } = data;
 
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
-    })
+          commit("SET_NAME", name);
+          commit("SET_AVATAR", avatar);
+          resolve(data);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
   },
 
   // 第三个action
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        commit('SET_TOKEN', '')
-        removeToken()
-        resetRouter()
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
+      logout(state.token)
+        .then(() => {
+          commit("SET_TOKEN", "");
+          removeToken();
+          resetRouter();
+          resolve();
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
   },
 
   // 第四个action
   // remove token
   resetToken({ commit }) {
     return new Promise(resolve => {
-      commit('SET_TOKEN', '')
-      removeToken()
-      resolve()
-    })
+      commit("SET_TOKEN", "");
+      removeToken();
+      resolve();
+    });
+  },
+
+  changeUserId({ commit, userId }) {
+    console.log("userId");
+    console.log(userId);
+    return new Promise(resolve => {
+      commit("SET_USER_ID", userId);
+    });
   }
-}
+};
 
 export default {
   namespaced: true,
   state,
   mutations,
   actions
-}
-
+};

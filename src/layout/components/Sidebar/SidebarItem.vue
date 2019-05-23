@@ -28,11 +28,12 @@
 import path from 'path'
 import { isExternal } from '@/utils/validate'
 import Item from './Item'
+import AppLink from './Link'
 import FixiOSBug from './FixiOSBug'
 
 export default {
   name: 'SidebarItem',
-  components: { Item },
+  components: { Item, AppLink },
   mixins: [FixiOSBug],
   props: {
     // route object
