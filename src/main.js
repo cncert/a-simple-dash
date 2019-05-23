@@ -38,7 +38,7 @@ Vue.use(
   new VueSocketio({
     debug: true,
     // connection: process.env.VUE_APP_WS_API // 地址+端口，由后端提供
-    connection: "ws://127.0.0.1:5000/events" // 地址+端口，由后端提供
+    connection: "ws://192.168.204.134:5000/events" // 地址+端口，由后端提供
   })
 );
 

@@ -6,7 +6,8 @@ const state = {
   token: getToken(),
   name: "",
   avatar: "",
-  userId: ""
+  userId: "",
+  webStatus: false
 };
 
 // 定义mutation
@@ -30,6 +31,9 @@ const mutations = {
   },
   SET_USER_ID: (state, userId) => {
     state.userId = userId;
+  },
+  SET_WEB_STATUS: (state, status) => {
+    state.webStatus = true;
   }
 };
 
@@ -74,6 +78,8 @@ const actions = {
   // 第一个action
   // user login
   login({ commit }, userInfo) {
+    // userInfo: dispatch 传过来的数据
+    // store.dispatch({type：'login'，usserinfo：userInfo}) 给actions传数据
     const { username, password } = userInfo;
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password })
@@ -140,11 +146,19 @@ const actions = {
     });
   },
 
-  changeUserId({ commit, userId }) {
+  changeUserId({ commit }, userId) {
     console.log("userId");
     console.log(userId);
     return new Promise(resolve => {
       commit("SET_USER_ID", userId);
+    });
+  },
+
+  changeStatus({ commit }, status) {
+    console.log("status");
+    console.log(status);
+    return new Promise(resolve => {
+      commit("SET_WEB_STATUS", status);
     });
   }
 };
