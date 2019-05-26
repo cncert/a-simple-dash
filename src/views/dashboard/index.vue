@@ -4,7 +4,9 @@
     <div class="dashboard-text">name: {{ name }}</div>
     <div>
       <div>home {{ text }}</div>
-      <div> {{ webStatus }}</div>
+      <div>websocket状态: {{ webStatus }}</div>
+      <div>userId {{ userId }}</div>
+      <div>主机信息 {{ hostInfo }}</div>
       <div @click="sendSocketMsg">
         <button>发socket信息</button>
       </div>
@@ -20,11 +22,12 @@ export default {
   data() {
     return {
       text: "这是首页",
+      hostInfo: ""
     };
   },
   computed: {
     ...mapGetters([
-      "name","webStatus"
+      "name","webStatus", "userId"
       // mapGetters作用：将getters.js中定义的变量导入到当前computed中,在template中可以直接使用这个变量
     ])
   },
@@ -49,7 +52,7 @@ export default {
         url: "http://192.168.204.134:5000/api/ansible_task",
         data: {
           elementid: "progressid",
-          userid: "userId",
+          userid: this.$store.getters.userId,
           ansible_module_name: "setup",
           ansible_module_args: ""
         }
@@ -59,15 +62,13 @@ export default {
   },
   sockets: {
     celerystatus: function(data) {
-      console.log(data);
+      console.log('llll');
+      this.hostInfo = data
     },
     userid: function(data) {
       console.log("socket connected");
-      console.log(data);
 
       this.$store.dispatch({type:'user/changeUserId', datas:data} )
-      console.log("over")
-      console.log(this.$store.state)
     },
     status: function(data){
       console.log(data)
