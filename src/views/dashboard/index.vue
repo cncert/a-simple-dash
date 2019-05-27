@@ -8,7 +8,7 @@
       <div>userId {{ userId }}</div>
       <div>主机信息 {{ hostInfo }}</div>
       <div @click="sendSocketMsg">
-        <button>发socket信息</button>
+        <button>执行任务</button>
       </div>
     </div>
   </div>
@@ -16,6 +16,9 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import { longTask } from "@/api/task";
+import VueSocketio from "vue-socket.io";
+import { thisExpression } from "@babel/types";
 
 export default {
   name: "Dashboard",
@@ -27,56 +30,51 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "name","webStatus", "userId"
+      "name",
+      "webStatus",
+      "userId"
       // mapGetters作用：将getters.js中定义的变量导入到当前computed中,在template中可以直接使用这个变量
     ])
   },
-  mounted() {
-    // 触发后台socket事件
-    // this.$socket.emit("/api/ansible_task", {
-    //   elementid: "progressid",
-    //   userid: "userId",
-    //   ansible_module_name: "setup",
-    //   ansible_module_args: ""
-    // });
-    // // 添加socket事件监听
-    // this.sockets.subscribe("clientEventMessage", data => {
-    //   console.log(data);
-    // });
-  },
+  mounted() {},
   methods: {
     sendSocketMsg() {
-      this.$http({
-        method: "post",
-        url: "http://127.0.0.1:5000/api/ansible_task",
-        // url: "http://192.168.204.134:5000/api/ansible_task",
-        data: {
+      console.log(this.$socket.connected);
+      if (!this.$store.getters.webStatus) {
+        window.location.reload();
+      } else {
+        let sendData = {
           elementid: "progressid",
           userid: this.$store.getters.userId,
           ansible_module_name: "setup",
           ansible_module_args: ""
-        }
-      });
-    },
-    
+        };
+        longTask(sendData)
+          .then(response => {
+            const data = response;
+            console.log(data);
+            resolve(data); //resolve的意思就是：我们期望Promise返回的数据，类似于return
+          })
+          .catch(error => {});
+      }
+    }
   },
   sockets: {
-    celerystatus: function(data) {
-      console.log('llll');
-      this.hostInfo = data
+    celerystatus: function(hostInfo) {
+      this.hostInfo = hostInfo;
     },
     userid: function(data) {
-      console.log("socket connected");
-
-      this.$store.dispatch({type:'user/changeUserId', datas:data} )
+      // 通过dispatch触发actions，actions进而触发mutations，最终修改state,
+      // 其中，下边的type是指定的actions，user是存放actions的文件，changeUserId是action的名字
+      this.$store.dispatch({ type: "user/changeUserId", datas: data });
     },
-    status: function(data){
-      console.log(data)
-      this.$store.dispatch({type:'user/changeStatus', status:data} )
+    status: function(data) {
+      console.log(data);
+      this.$store.dispatch({ type: "user/changeStatus", status: data.status });
     },
-    connect: function(data){
-      this.$socket.emit("status", {status: 'I\'m connected!'})
-    },
+    connect: function(data) {
+      this.$socket.emit("status", { status: "client connected" });
+    }
   }
 };
 </script>

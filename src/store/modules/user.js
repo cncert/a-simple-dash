@@ -33,7 +33,12 @@ const mutations = {
     state.userId = userId.datas.userid;
   },
   SET_WEB_STATUS: (state, status) => {
-    state.webStatus = true;
+    console.log(status, "sssssssssssssss");
+    if (status.status == "client connected") {
+      state.webStatus = true;
+    } else {
+      state.webStatus = false;
+    }
   }
 };
 
@@ -78,13 +83,14 @@ const actions = {
   // 第一个action
   // user login
   login({ commit }, userInfo) {
-    // userInfo: dispatch 传过来的数据
+    // userInfo: 是dispatch 传过来的数据
     // store.dispatch({type：'login'，usserinfo：userInfo}) 给actions传数据
     const { username, password } = userInfo;
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password })
         .then(response => {
-          const { data } = response;
+          console.log(response);
+          const data = response;
           commit("SET_TOKEN", data.token);
           setToken(data.token);
           resolve();
@@ -101,17 +107,18 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token)
         .then(response => {
-          const { data } = response;
-
+          const data = response;
+          console.log(data);
           if (!data) {
             reject("Verification failed, please Login again.");
           }
 
-          const { name, avatar } = data;
+          // const { name, avatar } = data;
+          // console.log(name, avatar);
 
-          commit("SET_NAME", name);
-          commit("SET_AVATAR", avatar);
-          resolve(data);
+          commit("SET_NAME", data.name);
+          commit("SET_AVATAR", data.avatar);
+          resolve(data); //resolve的意思就是：我们期望Promise返回的数据，类似于return
         })
         .catch(error => {
           reject(error);
