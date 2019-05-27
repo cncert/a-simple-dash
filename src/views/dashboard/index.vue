@@ -19,8 +19,11 @@ import { mapGetters, mapActions } from "vuex";
 import { longTask } from "@/api/task";
 import VueSocketio from "vue-socket.io";
 import { thisExpression } from "@babel/types";
+import { constants } from 'fs';
+import io from 'socket.io-client'
 
 export default {
+  
   name: "Dashboard",
   data() {
     return {
@@ -36,7 +39,16 @@ export default {
       // mapGetters作用：将getters.js中定义的变量导入到当前computed中,在template中可以直接使用这个变量
     ])
   },
-  mounted() {},
+  mounted() {
+    const iosocket = io.connect('http://192.168.204.134:5000/events');
+    this.$socket.emit('connect');
+    // iosocket.on('status', data =>{
+    //   // 最新的
+    //   console.log(data, "ddddddddddddddddddddd")
+    //   console.log(data.userid, "uuuuuuuuuuuuuuuu")
+    //   this.$store.dispatch({ type: "user/changeStatus", status: data.status });
+    // });
+  },
   methods: {
     sendSocketMsg() {
       console.log(this.$socket.connected);
@@ -60,21 +72,23 @@ export default {
     }
   },
   sockets: {
+    connect: function(data) {
+      this.$socket.emit("status", { status: "client connected" });
+    },
     celerystatus: function(hostInfo) {
       this.hostInfo = hostInfo;
     },
     userid: function(data) {
       // 通过dispatch触发actions，actions进而触发mutations，最终修改state,
       // 其中，下边的type是指定的actions，user是存放actions的文件，changeUserId是action的名字
+      console.log(data,"userid")
       this.$store.dispatch({ type: "user/changeUserId", datas: data });
     },
     status: function(data) {
-      console.log(data);
+      console.log(data,"statusrrrrrrrrrrrrrrr");
       this.$store.dispatch({ type: "user/changeStatus", status: data.status });
     },
-    connect: function(data) {
-      this.$socket.emit("status", { status: "client connected" });
-    }
+    
   }
 };
 </script>
