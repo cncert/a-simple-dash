@@ -30,7 +30,7 @@ const mutations = {
     state.avatar = avatar;
   },
   SET_USER_ID: (state, userId) => {
-    state.userId = userId;
+    state.userId = userId.datas.userid;
   },
   SET_WEB_STATUS: (state, status) => {
     state.webStatus = true;
@@ -147,16 +147,12 @@ const actions = {
   },
 
   changeUserId({ commit }, userId) {
-    console.log("userId");
-    console.log(userId);
     return new Promise(resolve => {
       commit("SET_USER_ID", userId);
     });
   },
 
   changeStatus({ commit }, status) {
-    console.log("status");
-    console.log(status);
     return new Promise(resolve => {
       commit("SET_WEB_STATUS", status);
     });
