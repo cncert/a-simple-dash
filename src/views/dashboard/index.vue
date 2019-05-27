@@ -45,8 +45,8 @@ export default {
     sendSocketMsg() {
       this.$http({
         method: "post",
-        // url: "http://127.0.0.1:5000/api/ansible_task",
-        url: "http://192.168.204.134:5000/api/ansible_task",
+        url: "http://127.0.0.1:5000/api/ansible_task",
+        // url: "http://192.168.204.134:5000/api/ansible_task",
         data: {
           elementid: "progressid",
           userid: "userId",
@@ -76,7 +76,6 @@ export default {
     connect: function(data){
       this.$socket.emit("status", {status: 'I\'m connected!'})
     },
-   
   }
 };
 </script>
