@@ -34,7 +34,7 @@ const mutations = {
   },
   SET_WEB_STATUS: (state, status) => {
     console.log(status, "sssssssssssssss");
-    if (status.status == "client connected") {
+    if (status.status == "connected") {
       state.webStatus = true;
     } else {
       state.webStatus = false;

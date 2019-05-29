@@ -41,20 +41,26 @@ export default {
   },
   mounted() {
     const iosocket = io.connect('http://192.168.204.134:5000/events');
-    this.$socket.emit('connect');
-    // iosocket.on('status', data =>{
-    //   // 最新的
-    //   console.log(data, "ddddddddddddddddddddd")
-    //   console.log(data.userid, "uuuuuuuuuuuuuuuu")
-    //   this.$store.dispatch({ type: "user/changeStatus", status: data.status });
-    // });
+    iosocket.emit('connect');
+    
+    iosocket.on('status', data =>{
+      // 最新的
+      console.log(data, "ddddddddddddddddddddd")
+      console.log(data.status, "uuuuuuuuuuuuuuuu")
+      this.$store.dispatch({ type: "user/changeStatus", status: data.status });
+    });
+    iosocket.on('userid', data=>{
+      console.log(data,"userid")
+      this.$store.dispatch({ type: "user/changeUserId", datas: data });
+    });
+    iosocket.on('celerystatus', data=>{
+      console.log(data,"hostInfo")
+      this.hostInfo = data;
+    })
+
   },
   methods: {
     sendSocketMsg() {
-      console.log(this.$socket.connected);
-      if (!this.$store.getters.webStatus) {
-        window.location.reload();
-      } else {
         let sendData = {
           elementid: "progressid",
           userid: this.$store.getters.userId,
@@ -68,28 +74,8 @@ export default {
             resolve(data); //resolve的意思就是：我们期望Promise返回的数据，类似于return
           })
           .catch(error => {});
-      }
     }
   },
-  sockets: {
-    connect: function(data) {
-      this.$socket.emit("status", { status: "client connected" });
-    },
-    celerystatus: function(hostInfo) {
-      this.hostInfo = hostInfo;
-    },
-    userid: function(data) {
-      // 通过dispatch触发actions，actions进而触发mutations，最终修改state,
-      // 其中，下边的type是指定的actions，user是存放actions的文件，changeUserId是action的名字
-      console.log(data,"userid")
-      this.$store.dispatch({ type: "user/changeUserId", datas: data });
-    },
-    status: function(data) {
-      console.log(data,"statusrrrrrrrrrrrrrrr");
-      this.$store.dispatch({ type: "user/changeStatus", status: data.status });
-    },
-    
-  }
 };
 </script>
 

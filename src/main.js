@@ -5,7 +5,6 @@ import "normalize.css/normalize.css"; // A modern alternative to CSS resets
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import locale from "element-ui/lib/locale/lang/en"; // lang i18n
-import VueSocketio from "vue-socket.io";
 import axios from "axios";
 
 import "@/styles/index.scss"; // global css
@@ -34,18 +33,6 @@ Vue.prototype.$http = axios;
 
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale });
-Vue.use(
-  new VueSocketio({
-    debug: true,
-    connection: process.env.VUE_APP_WS_API, // 地址+端口，由后端提供
-    // connection: "http://127.0.0.1:5000/events", // 地址+端口，由后端提供
-    vuex: {
-      store,
-      mutationPrefix: "SOCKET_",
-      actionPrefix: "SOCKET_"
-    }
-  })
-);
 
 Vue.config.productionTip = false;
 
