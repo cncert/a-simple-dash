@@ -7,7 +7,8 @@ const state = {
   name: "",
   avatar: "",
   userId: "",
-  webStatus: false
+  webStatus: false,
+  hostInfo: {}
 };
 
 // 定义mutation
@@ -39,7 +40,10 @@ const mutations = {
     } else {
       state.webStatus = false;
     }
-  }
+  },
+  SET_HOST_INFO: (state, hostInfo) => {
+    state.hostInfo = hostInfo;
+  },
 };
 
 // 定义actions
@@ -162,6 +166,12 @@ const actions = {
   changeStatus({ commit }, status) {
     return new Promise(resolve => {
       commit("SET_WEB_STATUS", status);
+    });
+  },
+
+  changeHostInfo({ commit }, hostInfo) {
+    return new Promise(resolve => {
+      commit("SET_HOST_INFO", hostInfo.hostInfo);
     });
   }
 };

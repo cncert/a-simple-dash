@@ -11,6 +11,7 @@
         <button>执行任务</button>
       </div>
     </div>
+    <dash-table />
   </div>
 </template>
 
@@ -20,6 +21,7 @@ import { longTask } from "@/api/task";
 import VueSocketio from "vue-socket.io";
 import { thisExpression } from "@babel/types";
 import { constants } from 'fs';
+import dashTable from "./components/table"
 import io from 'socket.io-client'
 
 export default {
@@ -31,6 +33,9 @@ export default {
       hostInfo: ""
     };
   },
+  components: {
+    dashTable,
+  },
   computed: {
     ...mapGetters([
       "name",
@@ -40,13 +45,9 @@ export default {
     ])
   },
   mounted() {
-    const iosocket = io.connect('http://192.168.204.134:5000/events');
+    const iosocket = io.connect(process.env.VUE_APP_WS_API);
     iosocket.emit('connect');
-    
     iosocket.on('status', data =>{
-      // 最新的
-      console.log(data, "ddddddddddddddddddddd")
-      console.log(data.status, "uuuuuuuuuuuuuuuu")
       this.$store.dispatch({ type: "user/changeStatus", status: data.status });
     });
     iosocket.on('userid', data=>{
@@ -54,8 +55,9 @@ export default {
       this.$store.dispatch({ type: "user/changeUserId", datas: data });
     });
     iosocket.on('celerystatus', data=>{
-      console.log(data,"hostInfo")
+      console.log(data,"changeHostInfo")
       this.hostInfo = data;
+      this.$store.dispatch({ type: "user/changeHostInfo", hostInfo: data });
     })
 
   },
