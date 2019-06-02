@@ -1,14 +1,16 @@
 /* eslint-disable */
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
     <div>
-      <div>home {{ text }}</div>
-      <div>websocket状态: {{ webStatus }}</div>
-      <div>userId {{ userId }}</div>
-      <div>主机信息 {{ hostInfo }}</div>
+      <div class="data-self-webstatus">
+        <h2> 信道状态: 
+          <el-button class="data-self-webstatus-icon " v-bind:class="{'data-self-webstatus-icon-color-success':webStatus,'data-self-webstatus-icon-color-failed':!webStatus}" circle size="medium">
+          </el-button>
+        </h2>
+      </div>
+      <!-- <div>主机信息 {{ hostInfo }}</div> -->
       <div @click="sendSocketMsg">
-        <button>执行任务</button>
+        <button>获取主机信息</button>
       </div>
     </div>
     <dash-table />
@@ -40,7 +42,7 @@ export default {
     ...mapGetters([
       "name",
       "webStatus",
-      "userId"
+      "userId", // websocket channel id
       // mapGetters作用：将getters.js中定义的变量导入到当前computed中,在template中可以直接使用这个变量
     ])
   },
@@ -48,14 +50,15 @@ export default {
     const iosocket = io.connect(process.env.VUE_APP_WS_API);
     iosocket.emit('connect');
     iosocket.on('status', data =>{
+      console.log(data, "QQQQQQQQQQQQQQQ")
       this.$store.dispatch({ type: "user/changeStatus", status: data.status });
     });
     iosocket.on('userid', data=>{
-      console.log(data,"userid")
+      // console.log(data,"userid")
       this.$store.dispatch({ type: "user/changeUserId", datas: data });
     });
     iosocket.on('celerystatus', data=>{
-      console.log(data,"changeHostInfo")
+      // console.log(data,"changeHostInfo")
       this.hostInfo = data;
       this.$store.dispatch({ type: "user/changeHostInfo", hostInfo: data });
     })
@@ -76,7 +79,8 @@ export default {
             resolve(data); //resolve的意思就是：我们期望Promise返回的数据，类似于return
           })
           .catch(error => {});
-    }
+    },
+    
   },
 };
 </script>
@@ -90,5 +94,22 @@ export default {
     font-size: 30px;
     line-height: 46px;
   }
+}
+.data-self {
+  &-webstatus {
+    float: right;
+    color: #454E56
+  }
+  &-webstatus-icon {
+    padding-top: 20px;
+    padding-bottom: 0px;
+  }
+  &-webstatus-icon-color-success {
+    background-color: #20BE4D
+  }
+  &-webstatus-icon-color-failed {
+    background-color: gray
+  }
+
 }
 </style>

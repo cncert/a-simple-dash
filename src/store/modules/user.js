@@ -8,7 +8,7 @@ const state = {
   avatar: "",
   userId: "",
   webStatus: false,
-  hostInfo: {}
+  hostInfo: {},
 };
 
 // 定义mutation
@@ -34,7 +34,6 @@ const mutations = {
     state.userId = userId.datas.userid;
   },
   SET_WEB_STATUS: (state, status) => {
-    console.log(status, "sssssssssssssss");
     if (status.status == "connected") {
       state.webStatus = true;
     } else {
@@ -170,10 +169,13 @@ const actions = {
   },
 
   changeHostInfo({ commit }, hostInfo) {
+    console.log(hostInfo.hostInfo,"KKKKKKKKKKKKK")
     return new Promise(resolve => {
       commit("SET_HOST_INFO", hostInfo.hostInfo);
     });
-  }
+  },
+
+
 };
 
 export default {

@@ -16,6 +16,6 @@ const getters = {
   name: state => state.user.name,
   userId: state => state.user.userId,
   webStatus: state => state.user.webStatus,
-  hostInfo: state => state.user.hostInfo
+  hostInfo: state => state.user.hostInfo,
 }
 export default getters
