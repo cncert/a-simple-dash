@@ -50,7 +50,6 @@ export default {
     const iosocket = io.connect(process.env.VUE_APP_WS_API);
     iosocket.emit('connect');
     iosocket.on('status', data =>{
-      console.log(data, "QQQQQQQQQQQQQQQ")
       this.$store.dispatch({ type: "user/changeStatus", status: data.status });
     });
     iosocket.on('userid', data=>{

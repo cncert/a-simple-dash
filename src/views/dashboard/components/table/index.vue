@@ -83,13 +83,11 @@ export default {
       return this.$store.getters.userId
     },
     hostInfoListCom: function () {
-      
       if(JSON.stringify(this.$store.getters.hostInfo) == "{}"){
         console.log("get default hostinfo")
       }else{
         let _info = {}
         let remoteHostInfo = this.$store.getters.hostInfo
-        console.log(Object.keys(remoteHostInfo.result.success).length)
         _info = remoteHostInfo
         if(Object.keys(remoteHostInfo.result.success).length !== 0){
           _info["display_status"] = "success"
